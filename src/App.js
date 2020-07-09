@@ -1,43 +1,34 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+
 import Header from "./componenets/UI/Header";
 import Search from "./componenets/UI/Search";
-import Beer from "./componenets/Beer/Beer";
+import Footer from "./componenets/UI/Footer";
+import BeerList from "./componenets/Beer/BeerList";
 
 function App() {
-  const url = "https://api.punkapi.com/v2/beers/";
-
   const [beers, setBeers] = useState([]);
+  const [query, setQuery] = useState(0);
 
   useEffect(() => {
-    getBeers();
-  }, []);
+    const fetchItems = async () => {
+      const res = await fetch(
+        `https://api.punkapi.com/v2/beers?abv_gt=${query}`
+      );
+      const data = await res.json();
+      console.log(data);
+      setBeers(data);
+    };
 
-  const getBeers = async () => {
-    const res = await fetch(url);
-    const data = await res.json();
-    setBeers(data);
-    console.log(data.ingredients);
-  };
+    fetchItems();
+  }, [query]);
 
   return (
     <div className='App'>
       <Header />
-      <Search />
-      <div className='beers'>
-        {beers.map(beer => (
-          <Beer
-            key={beer.id}
-            name={beer.name}
-            date={beer.first_brewed}
-            desc={beer.description}
-            malts={beer.ingredients.malt}
-            hops={beer.ingredients.hops}
-            yeast={beer.ingredients.yeast}
-            img={beer.image_url}
-          />
-        ))}
-      </div>
+      <Search getQuery={q => setQuery(q)} />
+      <h1 className='search-query'>Beers with an ABV greater than {query}</h1>
+      <BeerList beers={beers} />
+      <Footer />
     </div>
   );
 }
