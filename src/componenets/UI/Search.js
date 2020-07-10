@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-const Search = ({ getQuery }) => {
-  const [text, setText] = useState("");
+const Search = ({ getQuery, query }) => {
+  const [text, setText] = useState(0);
 
   const onChange = q => {
     setText(q);
@@ -15,6 +15,7 @@ const Search = ({ getQuery }) => {
 
   return (
     <div className='search'>
+      <h1 className='search-query'>Beers with an ABV greater than {query}</h1>
       <form className='search-form'>
         <input
           className='search-input'

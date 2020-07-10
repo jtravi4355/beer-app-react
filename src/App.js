@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Header from "./componenets/UI/Header";
 import Search from "./componenets/UI/Search";
 import Footer from "./componenets/UI/Footer";
 import BeerList from "./componenets/Beer/BeerList";
+import BeerInfo from "./componenets/Beer/BeerInfo";
 
 function App() {
   const [beers, setBeers] = useState([]);
@@ -15,7 +17,7 @@ function App() {
         `https://api.punkapi.com/v2/beers?abv_gt=${query}`
       );
       const data = await res.json();
-      console.log(data);
+
       setBeers(data);
     };
 
@@ -23,13 +25,21 @@ function App() {
   }, [query]);
 
   return (
-    <div className='App'>
-      <Header />
-      <Search getQuery={q => setQuery(q)} />
-      <h1 className='search-query'>Beers with an ABV greater than {query}</h1>
-      <BeerList beers={beers} />
-      <Footer />
-    </div>
+    <Router>
+      <div className='App'>
+        <Header />
+        <div className='content'>
+          <Route path='/' exact>
+            <Search getQuery={q => setQuery(q)} query={query} />
+            <BeerList beers={beers} />
+          </Route>
+
+          <Route path='/beer/:id' exact component={BeerInfo} />
+        </div>
+
+        <Footer />
+      </div>
+    </Router>
   );
 }
 
